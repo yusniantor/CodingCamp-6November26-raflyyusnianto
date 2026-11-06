@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="DayFlow — your personal productivity dashboard for tasks, focus sessions, and quick links." />
+  <title>DayFlow — Personal Productivity Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ─── SIDEBAR ─────────────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar" role="navigation" aria-label="Main navigation">
+
+    <!-- Wordmark -->
+    <div class="sidebar-brand">
+      <span class="brand-symbol" aria-hidden="true">◈</span>
+      <span class="brand-name">DayFlow</span>
+    </div>
+
+    <!-- Mobile menu toggle -->
+    <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="sidebar" aria-label="Toggle navigation menu">
+      <span class="hamburger-bar"></span>
+      <span class="hamburger-bar"></span>
+      <span class="hamburger-bar"></span>
+    </button>
+
+    <!-- Nav links -->
+    <nav class="sidebar-nav" id="sidebarNav">
+      <ul role="list">
+        <li>
+          <a href="#section-overview" class="nav-link active" data-section="overview" aria-current="page">
+            <span class="nav-icon" aria-hidden="true">◉</span>
+            <span>Overview</span>
+          </a>
+        </li>
+        <li>
+          <a href="#section-tasks" class="nav-link" data-section="tasks">
+            <span class="nav-icon" aria-hidden="true">☑</span>
+            <span>My Tasks</span>
+          </a>
+        </li>
+        <li>
+          <a href="#section-timer" class="nav-link" data-section="timer">
+            <span class="nav-icon" aria-hidden="true">◷</span>
+            <span>Focus Timer</span>
+          </a>
+        </li>
+        <li>
+          <a href="#section-links" class="nav-link" data-section="links">
+            <span class="nav-icon" aria-hidden="true">⬡</span>
+            <span>Quick Links</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Theme toggle -->
+    <div class="sidebar-footer">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" aria-pressed="false">
+        <span class="theme-icon theme-icon--light" aria-hidden="true">☀</span>
+        <span class="theme-label">Light</span>
+        <span class="theme-icon theme-icon--dark" aria-hidden="true">☾</span>
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ─── MAIN LAYOUT ───────────────────────────────────────────── -->
+  <div class="layout-wrapper">
+
+    <!-- ─── TOP HEADER ─────────────────────────────────────────── -->
+    <header class="top-header" id="section-overview">
+      <div class="header-greeting">
+        <p class="greeting-time" id="greetingTime" aria-live="polite">Good morning</p>
+        <h1 class="greeting-name">
+          <span id="greetingDisplay">Friend</span>
+          <button class="edit-name-btn" id="editNameBtn" aria-label="Edit your display name">✎</button>
+        </h1>
+        <!-- Inline name editor (hidden by default) -->
+        <form class="name-editor" id="nameEditor" aria-label="Edit display name" hidden>
+          <input
+            type="text"
+            id="nameInput"
+            class="name-input"
+            maxlength="30"
+            placeholder="Your name…"
+            aria-label="Display name"
+            autocomplete="off"
+          />
+          <button type="submit" class="btn btn--sm btn--primary">Save</button>
+          <button type="button" class="btn btn--sm btn--ghost" id="cancelNameBtn">Cancel</button>
+        </form>
+      </div>
+
+      <div class="header-meta">
+        <p class="header-date" id="currentDate" aria-live="polite"></p>
+        <p class="header-clock" id="liveClock" aria-live="off"></p>
+        <div class="progress-summary" aria-label="Task progress">
+          <span class="progress-bar-wrap" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="progressBarWrap">
+            <span class="progress-bar-fill" id="progressBarFill"></span>
+          </span>
+          <span class="progress-text" id="progressText">0 of 0 tasks done</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ─── CONTENT AREA ─────────────────────────────────────────── -->
+    <div class="content-area">
+
+      <!-- ── MAIN WORKSPACE (tasks) ─────────────────────────────── -->
+      <main class="main-workspace" id="section-tasks" aria-label="Task manager">
+
+        <div class="section-head">
+          <h2 class="section-title">My Tasks</h2>
+          <div class="sort-controls">
+            <label for="taskSort" class="sort-label">Sort by</label>
+            <select id="taskSort" class="sort-select" aria-label="Sort tasks">
+              <option value="default">Added order</option>
+              <option value="alpha">A → Z</option>
+              <option value="alpha-desc">Z → A</option>
+              <option value="pending">Pending first</option>
+              <option value="done">Done first</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Task input -->
+        <form class="task-form" id="taskForm" aria-label="Add a new task">
+          <input
+            type="text"
+            id="taskInput"
+            class="task-input"
+            placeholder="What needs to get done today?"
+            maxlength="120"
+            autocomplete="off"
+            aria-label="New task name"
+            required
+          />
+          <button type="submit" class="btn btn--primary btn--add" aria-label="Add task">
+            <span aria-hidden="true">+</span> Add
+          </button>
+        </form>
+
+        <!-- Validation / duplicate message -->
+        <p class="task-msg" id="taskMsg" role="alert" aria-live="assertive" hidden></p>
+
+        <!-- Task list -->
+        <ul class="task-list" id="taskList" role="list" aria-label="Task list" aria-live="polite">
+          <!-- Tasks injected by JS -->
+        </ul>
+
+        <!-- Empty state -->
+        <div class="empty-state" id="emptyState" aria-hidden="true" hidden>
+          <span class="empty-icon" aria-hidden="true">✦</span>
+          <p>Your task list is clear.</p>
+          <p class="empty-sub">Add something to get started.</p>
+        </div>
+
+      </main>
+
+      <!-- ── RIGHT FOCUS PANEL ─────────────────────────────────── -->
+      <aside class="focus-panel" id="section-timer" aria-label="Focus timer">
+
+        <h2 class="section-title">Focus Timer</h2>
+
+        <!-- Circular progress timer -->
+        <div class="timer-wrap">
+          <svg class="timer-svg" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+            <!-- Track ring -->
+            <circle class="timer-track" cx="60" cy="60" r="52" />
+            <!-- Progress ring -->
+            <circle class="timer-ring" id="timerRing" cx="60" cy="60" r="52" />
+          </svg>
+          <div class="timer-display" aria-live="off" aria-atomic="true">
+            <span class="timer-time" id="timerTime">25:00</span>
+          </div>
+        </div>
+
+        <p class="timer-status" id="timerStatus">Ready to focus</p>
+
+        <!-- Controls -->
+        <div class="timer-controls">
+          <button class="btn btn--primary" id="timerStartBtn" aria-label="Start focus timer">Start</button>
+          <button class="btn btn--ghost" id="timerResetBtn" aria-label="Reset focus timer">Reset</button>
+        </div>
+
+        <!-- Duration selector -->
+        <div class="timer-duration">
+          <label for="timerDuration" class="timer-duration-label">Duration</label>
+          <select id="timerDuration" class="sort-select" aria-label="Select timer duration in minutes">
+            <option value="5">5 min</option>
+            <option value="15">15 min</option>
+            <option value="25" selected>25 min</option>
+            <option value="30">30 min</option>
+            <option value="45">45 min</option>
+            <option value="50">50 min</option>
+          </select>
+        </div>
+
+      </aside>
+
+    </div><!-- /.content-area -->
+
+    <!-- ─── QUICK LINKS ─────────────────────────────────────────── -->
+    <section class="quick-links-section" id="section-links" aria-label="Quick links">
+
+      <div class="section-head">
+        <h2 class="section-title">Quick Links</h2>
+        <button class="btn btn--ghost btn--sm" id="addLinkToggleBtn" aria-expanded="false" aria-controls="linkForm">
+          + Add link
+        </button>
+      </div>
+
+      <!-- Add-link form (hidden by default) -->
+      <form class="link-form" id="linkForm" aria-label="Add a quick link" hidden>
+        <div class="link-form-fields">
+          <input
+            type="text"
+            id="linkName"
+            class="task-input link-input"
+            placeholder="Link name"
+            maxlength="40"
+            aria-label="Link name"
+            required
+          />
+          <input
+            type="url"
+            id="linkUrl"
+            class="task-input link-input"
+            placeholder="https://example.com"
+            aria-label="Link URL"
+            required
+          />
+          <button type="submit" class="btn btn--primary btn--sm">Save</button>
+          <button type="button" class="btn btn--ghost btn--sm" id="cancelLinkBtn">Cancel</button>
+        </div>
+        <p class="task-msg" id="linkMsg" role="alert" aria-live="assertive" hidden></p>
+      </form>
+
+      <!-- Link list -->
+      <ul class="link-list" id="linkList" role="list" aria-label="Saved quick links">
+        <!-- Links injected by JS -->
+      </ul>
+
+      <!-- Empty state for links -->
+      <p class="links-empty" id="linksEmpty" hidden>No quick links yet — add one above.</p>
+
+    </section>
+
+  </div><!-- /.layout-wrapper -->
+
+  <script src="js/script.js"></script>
+</body>
+</html>
